@@ -1,7 +1,5 @@
 import java.util.*;
 
-//pozdrawiam
-
 public class Main {
     public static void main(String[] args) {
 
@@ -138,8 +136,10 @@ public class Main {
                 // Symulacja meczu miedzy 2 druzynami
 
                 MatchSimulator.simulateMatch(game.getTeam1(), game.getTeam2(), game.getTeam1Key(), game.getTeam2Key(), results, win_streaks, losing_streaks);
+                game.getTeam1().setAttack(game.getTeam1().updateAttack());
+                game.getTeam2().setAttack(game.getTeam2().updateAttack());
                 /*if(win_streaks.get(game.getTeam1Key()) == 2){
-                    game.getTeam1().setForm(1.1);hello world
+                    game.getTeam1().setForm(1.1);
                     win_streaks.put(game.getTeam1Key(), 0);
                 }
                 if(win_streaks.get(game.getTeam2Key()) == 2){

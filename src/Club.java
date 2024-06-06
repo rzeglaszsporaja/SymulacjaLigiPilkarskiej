@@ -1,4 +1,4 @@
-public class Club {
+public class Club implements Updates{
     private double attack;
     private double defence;
     private double midfield;
@@ -41,5 +41,15 @@ public class Club {
 
     public double getForm() {
         return form;
+    }
+
+    public double updateAttack() {
+        return attack*form;
+    }
+    public double updateMidfield() {
+        return midfield*form;
+    }
+    public double updateDefence() {
+        return defence*form;
     }
 }
