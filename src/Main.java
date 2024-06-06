@@ -139,7 +139,7 @@ public class Main {
 
                 MatchSimulator.simulateMatch(game.getTeam1(), game.getTeam2(), game.getTeam1Key(), game.getTeam2Key(), results, win_streaks, losing_streaks);
                 /*if(win_streaks.get(game.getTeam1Key()) == 2){
-                    game.getTeam1().setForm(1.1);
+                    game.getTeam1().setForm(1.1);hello world
                     win_streaks.put(game.getTeam1Key(), 0);
                 }
                 if(win_streaks.get(game.getTeam2Key()) == 2){
