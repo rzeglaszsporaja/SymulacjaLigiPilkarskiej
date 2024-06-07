@@ -43,13 +43,24 @@ public class Club implements Updates{
         return form;
     }
 
-    public double updateAttack() {
+    public double updateAttack(int value) {
         return attack*form;
     }
-    public double updateMidfield() {
+    public double updateMidfield(int value) {
         return midfield*form;
     }
-    public double updateDefence() {
+    public double updateDefence(int value) {
         return defence*form;
     }
+
+    public double resetAttack(int value) {
+        return attack/form;
+    }
+    public double resetMidfield(int value) {
+        return midfield/form;
+    }
+    public double resetDefence(int value) {
+        return defence/form;
+    }
+
 }

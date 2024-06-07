@@ -3,8 +3,15 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
 
+        // Zmienne potrzebne do wybranych funkcji w programie
+
         double chances_of_injury = 0.1;
         int number_of_seasons = 1;
+        int home = 1;
+        int away = 2;
+        int end_of_season=0;
+        int motivated_or_tired = 3;
+        boolean alredy_done = false;
 
         // Uworzenie obiektow (klubow pilkarskich)
 
@@ -25,6 +32,8 @@ public class Main {
         results.put("Slask_Wroclaw", 0);
         results.put("Borussia_Dortmund", 0);
 
+        // Utworzenie tablicy potrzebnej do zapisywania ilosci wygranych spotkan
+
         Map<String, Integer>win_streaks = new TreeMap<>();
         results.put("Rakow_Czestochowa", 0);
         results.put("AS_Roma", 0);
@@ -32,6 +41,8 @@ public class Main {
         results.put("Real_Madrid", 0);
         results.put("Slask_Wroclaw", 0);
         results.put("Borussia_Dortmund", 0);
+
+        // Utworzenie tablicy potrzebnej do zapisywania ilosci przegranych spotkan
 
         Map<String, Integer>losing_streaks = new TreeMap<>();
         results.put("Rakow_Czestochowa", 0);
@@ -53,6 +64,8 @@ public class Main {
         // Lista spotkan ktore moga sie odbyc w trakcie sezonu
 
         List<Fixture> fixtures = new ArrayList<>();
+
+        // Dodanie do listy mozliwych meczow do rozegrania
 
         fixtures.add(new Fixture(Rakow_Czestochowa, AS_Roma, RCZ, ASR));
         fixtures.add(new Fixture(Rakow_Czestochowa, FC_Barcelona, RCZ, FCB));
@@ -107,7 +120,12 @@ public class Main {
             int was_striker_injured1 = 0;
             int was_striker_injured2 = 0;
 
+            // Petla w ktorej odbeda sie wszystkie mecze w sezonie
+
             for (Fixture game : fixtures) {
+
+                //Losowanie kontuzji dla pary druzyn ktore beda graly spotkanie
+
                 if (Math.random() < chances_of_injury) {
                     Injury.injuryDefender(game.getTeam1());
                     was_defender_injured1++;
@@ -132,28 +150,30 @@ public class Main {
                     Injury.injuryStriker(game.getTeam2());
                     was_striker_injured2++;
                 }
+                // Jesli jest koncowka sezonu to przypisanie cech dla wybranych zespolow
+
+                if((end_of_season >= 0.9 * (double)(fixtures.size()/(results.size()/2)) || !alredy_done)){
+                    alredy_done = true;
+                    game.getTeam1().setAttack(game.getTeam1().updateAttack(motivated_or_tired));
+                    game.getTeam2().setAttack(game.getTeam2().updateAttack(motivated_or_tired));
+                    game.getTeam1().setMidfield(game.getTeam1().updateMidfield(motivated_or_tired));
+                    game.getTeam2().setMidfield(game.getTeam2().updateMidfield(motivated_or_tired));
+                    game.getTeam1().setDefence(game.getTeam1().updateDefence(motivated_or_tired));
+                    game.getTeam2().setDefence(game.getTeam2().updateDefence(motivated_or_tired));
+                }
+
+                // Zwieszkanie/zmniejszanie wspolczynnikow jesli druzyna gra u siebie/na wyjezdzie
+
+                game.getTeam1().setAttack(game.getTeam1().updateAttack(home));
+                game.getTeam2().setAttack(game.getTeam2().updateAttack(away));
+                game.getTeam1().setMidfield(game.getTeam1().updateMidfield(home));
+                game.getTeam2().setMidfield(game.getTeam2().updateMidfield(away));
+                game.getTeam1().setDefence(game.getTeam1().updateDefence(home));
+                game.getTeam2().setDefence(game.getTeam2().updateDefence(away));
 
                 // Symulacja meczu miedzy 2 druzynami
 
                 MatchSimulator.simulateMatch(game.getTeam1(), game.getTeam2(), game.getTeam1Key(), game.getTeam2Key(), results, win_streaks, losing_streaks);
-                game.getTeam1().setAttack(game.getTeam1().updateAttack());
-                game.getTeam2().setAttack(game.getTeam2().updateAttack());
-                /*if(win_streaks.get(game.getTeam1Key()) == 2){
-                    game.getTeam1().setForm(1.1);
-                    win_streaks.put(game.getTeam1Key(), 0);
-                }
-                if(win_streaks.get(game.getTeam2Key()) == 2){
-                    game.getTeam2().setForm(1.1);
-                    win_streaks.put(game.getTeam2Key(), 0);
-                }
-                if(losing_streaks.get(game.getTeam1Key()) == 2){
-                    game.getTeam1().setForm(0.9);
-                    win_streaks.put(game.getTeam1Key(), 0);
-                }
-                if(losing_streaks.get(game.getTeam2Key()) == 2){
-                    game.getTeam2().setForm(0.9);
-                    win_streaks.put(game.getTeam2Key(), 0);
-                }*/
 
                 //Resetowanie wspolczynnikow klubow jesli wystapila kontuzja
 
@@ -169,6 +189,19 @@ public class Main {
                     Injury.recoveryStriker(game.getTeam1());
                 if (was_striker_injured2 != 0)
                     Injury.recoveryStriker(game.getTeam2());
+
+                // Resetowanie wspolczynnikow po meczu u siebie/na wyjezdzie
+
+                game.getTeam1().setAttack(game.getTeam1().resetAttack(home));
+                game.getTeam2().setAttack(game.getTeam2().resetAttack(away));
+                game.getTeam1().setMidfield(game.getTeam1().resetMidfield(home));
+                game.getTeam2().setMidfield(game.getTeam2().resetMidfield(away));
+                game.getTeam1().setDefence(game.getTeam1().resetDefence(home));
+                game.getTeam2().setDefence(game.getTeam2().resetDefence(away));
+
+                // Zapisanie do zmiennej ile meczow sie odbylo
+
+                end_of_season++;
             }
         }
 
