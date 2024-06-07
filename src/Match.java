@@ -20,8 +20,6 @@ public class Match{
             if(random(0,100)<chanceOfScoring)
                 goal2++;
         }
-//        System.out.println(goal1);
-//        System.out.println(goal2);
 
         if(goal1>goal2)
             return 1;

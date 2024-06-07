@@ -19,14 +19,14 @@ public class ClubAway extends Club implements Updates{
     @Override
     public double updateMidfield(int value) {
         if(value == 2)
-            return super.updateAttack(value)*away;
+            return super.updateMidfield(value)*away;
         else
             return super.updateAttack(value);
     }
     @Override
     public double updateDefence(int value) {
         if(value == 2)
-            return super.updateAttack(value)*away;
+            return super.updateDefence(value)*away;
         else
             return super.updateAttack(value);
     }

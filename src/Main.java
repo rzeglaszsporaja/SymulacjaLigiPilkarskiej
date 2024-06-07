@@ -9,9 +9,9 @@ public class Main {
         int number_of_seasons = 1;
         int home = 1;
         int away = 2;
-        int end_of_season=0;
         int motivated_or_tired = 3;
-        boolean alredy_done = false;
+        int end_of_season=0;
+        boolean already_done = false;
 
         // Uworzenie obiektow (klubow pilkarskich)
 
@@ -25,32 +25,22 @@ public class Main {
         // Uworzenie tablicy potrzebnej do zapisywania wynikow spotkan
 
         Map<String, Integer>results = new TreeMap<>();
-        results.put("Rakow_Czestochowa", 0);
-        results.put("AS_Roma", 0);
-        results.put("FC_Barcelona", 0);
-        results.put("Real_Madrid", 0);
-        results.put("Slask_Wroclaw", 0);
-        results.put("Borussia_Dortmund", 0);
+        fillingMaps(results);
 
         // Utworzenie tablicy potrzebnej do zapisywania ilosci wygranych spotkan
 
         Map<String, Integer>win_streaks = new TreeMap<>();
-        results.put("Rakow_Czestochowa", 0);
-        results.put("AS_Roma", 0);
-        results.put("FC_Barcelona", 0);
-        results.put("Real_Madrid", 0);
-        results.put("Slask_Wroclaw", 0);
-        results.put("Borussia_Dortmund", 0);
+        fillingMaps(win_streaks);
 
         // Utworzenie tablicy potrzebnej do zapisywania ilosci przegranych spotkan
 
         Map<String, Integer>losing_streaks = new TreeMap<>();
-        results.put("Rakow_Czestochowa", 0);
-        results.put("AS_Roma", 0);
-        results.put("FC_Barcelona", 0);
-        results.put("Real_Madrid", 0);
-        results.put("Slask_Wroclaw", 0);
-        results.put("Borussia_Dortmund", 0);
+        fillingMaps(losing_streaks);
+
+        //Utworzenie tablicy potrzebnej do zapisywania ilosci zremisowanych spotkac
+
+        Map<String, Integer>draws = new TreeMap<>();
+        fillingMaps(draws);
 
         // Skroty nazw klubow
 
@@ -63,7 +53,7 @@ public class Main {
 
         // Lista spotkan ktore moga sie odbyc w trakcie sezonu
 
-        List<Fixture> fixtures = new ArrayList<>();
+        List <Fixture> fixtures = new ArrayList<>();
 
         // Dodanie do listy mozliwych meczow do rozegrania
 
@@ -111,93 +101,41 @@ public class Main {
 
             Collections.shuffle(fixtures);
 
-            // Kontuzje wystepujace przypadkowo miedzy meczami
-
-            int was_defender_injured1 = 0;
-            int was_defender_injured2 = 0;
-            int was_midfielder_injured1 = 0;
-            int was_midfielder_injured2 = 0;
-            int was_striker_injured1 = 0;
-            int was_striker_injured2 = 0;
-
             // Petla w ktorej odbeda sie wszystkie mecze w sezonie
 
             for (Fixture game : fixtures) {
 
                 //Losowanie kontuzji dla pary druzyn ktore beda graly spotkanie
 
-                if (Math.random() < chances_of_injury) {
-                    Injury.injuryDefender(game.getTeam1());
-                    was_defender_injured1++;
-                }
-                if (Math.random() < chances_of_injury) {
-                    Injury.injuryDefender(game.getTeam2());
-                    was_defender_injured2++;
-                }
-                if (Math.random() < chances_of_injury) {
-                    Injury.injuryMidfielder(game.getTeam1());
-                    was_midfielder_injured1++;
-                }
-                if (Math.random() < chances_of_injury) {
-                    Injury.injuryMidfielder(game.getTeam2());
-                    was_midfielder_injured2++;
-                }
-                if (Math.random() < chances_of_injury) {
-                    Injury.injuryStriker(game.getTeam1());
-                    was_striker_injured1++;
-                }
-                if (Math.random() < chances_of_injury) {
-                    Injury.injuryStriker(game.getTeam2());
-                    was_striker_injured2++;
-                }
+                gettingInjuries(game, chances_of_injury);
+
                 // Jesli jest koncowka sezonu to przypisanie cech dla wybranych zespolow
 
-                if((end_of_season >= 0.9 * (double)(fixtures.size()/(results.size()/2)) || !alredy_done)){
-                    alredy_done = true;
-                    game.getTeam1().setAttack(game.getTeam1().updateAttack(motivated_or_tired));
-                    game.getTeam2().setAttack(game.getTeam2().updateAttack(motivated_or_tired));
-                    game.getTeam1().setMidfield(game.getTeam1().updateMidfield(motivated_or_tired));
-                    game.getTeam2().setMidfield(game.getTeam2().updateMidfield(motivated_or_tired));
-                    game.getTeam1().setDefence(game.getTeam1().updateDefence(motivated_or_tired));
-                    game.getTeam2().setDefence(game.getTeam2().updateDefence(motivated_or_tired));
-                }
+                uniqueFeaturesMotivationTiredOfSeason(game, fixtures, end_of_season, motivated_or_tired, already_done);
 
                 // Zwieszkanie/zmniejszanie wspolczynnikow jesli druzyna gra u siebie/na wyjezdzie
 
-                game.getTeam1().setAttack(game.getTeam1().updateAttack(home));
-                game.getTeam2().setAttack(game.getTeam2().updateAttack(away));
-                game.getTeam1().setMidfield(game.getTeam1().updateMidfield(home));
-                game.getTeam2().setMidfield(game.getTeam2().updateMidfield(away));
-                game.getTeam1().setDefence(game.getTeam1().updateDefence(home));
-                game.getTeam2().setDefence(game.getTeam2().updateDefence(away));
+                uniqueFeaturesHomeAway(game, home, away);
 
                 // Symulacja meczu miedzy 2 druzynami
 
-                MatchSimulator.simulateMatch(game.getTeam1(), game.getTeam2(), game.getTeam1Key(), game.getTeam2Key(), results, win_streaks, losing_streaks);
+                MatchSimulator.simulateMatch(game.getTeam1(), game.getTeam2(), game.getTeam1Key(), game.getTeam2Key(), results, win_streaks, losing_streaks, draws);
+
+                /*
+                SAMO PRZYZNAWANIE LEPSZEJ FORMY DZIALA (CHYBA) ALE PRZEZ TO SYPIE SIE DUZO INNYCH RZECZY
+
+                checkingStreaks(game.getTeam1Key(), win_streaks, losing_streaks, draws);
+                checkingStreaks(game.getTeam2Key(), win_streaks, losing_streaks, draws);
+                hasStreak(game, game.getTeam1Key(), game.getTeam2Key(), win_streaks, losing_streaks, draws);*/
+
 
                 //Resetowanie wspolczynnikow klubow jesli wystapila kontuzja
 
-                if (was_defender_injured1 != 0)
-                    Injury.recoveryDefender(game.getTeam1());
-                if (was_defender_injured2 != 0)
-                    Injury.recoveryDefender(game.getTeam2());
-                if (was_midfielder_injured1 != 0)
-                    Injury.recoveryMidfielder(game.getTeam1());
-                if (was_midfielder_injured2 != 0)
-                    Injury.recoveryMidfielder(game.getTeam2());
-                if (was_striker_injured1 != 0)
-                    Injury.recoveryStriker(game.getTeam1());
-                if (was_striker_injured2 != 0)
-                    Injury.recoveryStriker(game.getTeam2());
+                recoveringFromInjuries(game);
 
                 // Resetowanie wspolczynnikow po meczu u siebie/na wyjezdzie
 
-                game.getTeam1().setAttack(game.getTeam1().resetAttack(home));
-                game.getTeam2().setAttack(game.getTeam2().resetAttack(away));
-                game.getTeam1().setMidfield(game.getTeam1().resetMidfield(home));
-                game.getTeam2().setMidfield(game.getTeam2().resetMidfield(away));
-                game.getTeam1().setDefence(game.getTeam1().resetDefence(home));
-                game.getTeam2().setDefence(game.getTeam2().resetDefence(away));
+                resetUniqueFeaturesHomeAway(game, home, away);
 
                 // Zapisanie do zmiennej ile meczow sie odbylo
 
@@ -210,5 +148,111 @@ public class Main {
         System.out.println(results);
         System.out.println(win_streaks);
         System.out.println(losing_streaks);
+        System.out.println(draws);
+    }
+
+    private static void gettingInjuries(Fixture game, double chances_of_injury){
+        if (Math.random() < chances_of_injury) {
+            Injury.injuryDefender(game.getTeam1());
+        }
+        if (Math.random() < chances_of_injury) {
+            Injury.injuryDefender(game.getTeam2());
+        }
+        if (Math.random() < chances_of_injury) {
+            Injury.injuryMidfielder(game.getTeam1());
+        }
+        if (Math.random() < chances_of_injury) {
+            Injury.injuryMidfielder(game.getTeam2());
+        }
+        if (Math.random() < chances_of_injury) {
+            Injury.injuryStriker(game.getTeam1());
+        }
+        if (Math.random() < chances_of_injury) {
+            Injury.injuryStriker(game.getTeam2());
+        }
+    }
+
+    private static void recoveringFromInjuries(Fixture game){
+        Injury.recoveryDefender(game.getTeam1());
+        Injury.recoveryDefender(game.getTeam2());
+        Injury.recoveryMidfielder(game.getTeam1());
+        Injury.recoveryMidfielder(game.getTeam2());
+        Injury.recoveryStriker(game.getTeam1());
+        Injury.recoveryStriker(game.getTeam2());
+    }
+    private static void uniqueFeaturesHomeAway(Fixture game, int home, int away){
+        game.getTeam1().setAttack(game.getTeam1().updateAttack(home));
+        game.getTeam2().setAttack(game.getTeam2().updateAttack(away));
+        game.getTeam1().setMidfield(game.getTeam1().updateMidfield(home));
+        game.getTeam2().setMidfield(game.getTeam2().updateMidfield(away));
+        game.getTeam1().setDefence(game.getTeam1().updateDefence(home));
+        game.getTeam2().setDefence(game.getTeam2().updateDefence(away));
+    }
+
+    private static void resetUniqueFeaturesHomeAway(Fixture game, int home, int away){
+        game.getTeam1().setAttack(game.getTeam1().resetAttack(home));
+        game.getTeam2().setAttack(game.getTeam2().resetAttack(away));
+        game.getTeam1().setMidfield(game.getTeam1().resetMidfield(home));
+        game.getTeam2().setMidfield(game.getTeam2().resetMidfield(away));
+        game.getTeam1().setDefence(game.getTeam1().resetDefence(home));
+        game.getTeam2().setDefence(game.getTeam2().resetDefence(away));
+    }
+
+    private static void uniqueFeaturesMotivationTiredOfSeason(Fixture game, List <Fixture> fixtures, int end_of_season, int motivated_or_tired, boolean already_done){
+        if((end_of_season >= 0.9 * (double)(fixtures.size())) && !already_done){
+            already_done = true;
+            game.getTeam1().setAttack(game.getTeam1().updateAttack(motivated_or_tired));
+            game.getTeam2().setAttack(game.getTeam2().updateAttack(motivated_or_tired));
+            game.getTeam1().setMidfield(game.getTeam1().updateMidfield(motivated_or_tired));
+            game.getTeam2().setMidfield(game.getTeam2().updateMidfield(motivated_or_tired));
+            game.getTeam1().setDefence(game.getTeam1().updateDefence(motivated_or_tired));
+            game.getTeam2().setDefence(game.getTeam2().updateDefence(motivated_or_tired));
+        }
+    }
+    private static void fillingMaps(Map<String, Integer>map){
+        map.put("Rakow_Czestochowa", 0);
+        map.put("AS_Roma", 0);
+        map.put("FC_Barcelona", 0);
+        map.put("Real_Madrid", 0);
+        map.put("Slask_Wroclaw", 0);
+        map.put("Borussia_Dortmund", 0);
+    }
+
+    private static void checkingStreaks(String team, Map<String, Integer> map1, Map<String, Integer> map2, Map<String, Integer> map3){
+        if(map1.get(team) == 1){
+            map2.put(team, 0);
+            map3.put(team, 0);
+        }
+        if(map2.get(team) == 1){
+            map1.put(team, 0);
+            map3.put(team, 0);
+        }
+        if(map3.get(team) == 1){
+            map2.put(team, 0);
+            map1.put(team, 0);
+        }
+    }
+    private static void hasStreak(Fixture game, String team1, String team2, Map<String, Integer> map1, Map<String, Integer> map2, Map<String, Integer> map3){
+        if(map1.get(team1) == 2){
+            game.getTeam1().setForm(1.1);
+            map2.put(team1, 0);
+            map3.put(team1, 0);
+        }
+        if(map2.get(team1) == 2){
+            game.getTeam1().setForm(0.9);
+            map1.put(team1, 0);
+            map3.put(team1, 0);
+        }
+        if(map1.get(team2) == 2){
+            game.getTeam2().setForm(1.1);
+            map2.put(team2, 0);
+            map3.put(team2, 0);
+        }
+        if(map2.get(team2) == 2){
+            game.getTeam2().setForm(0.9);
+            map1.put(team2, 0);
+            map3.put(team2, 0);
+        }
     }
 }
+
