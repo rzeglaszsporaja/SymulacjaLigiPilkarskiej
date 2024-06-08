@@ -11,7 +11,7 @@ public class Main {
         int away = 2;
         int motivated_or_tired = 3;
         int hasForm = 4;
-        int end_of_season=29;
+        int end_of_season=0;
         boolean already_done = false;
 
         // Uworzenie obiektow (klubow pilkarskich)
