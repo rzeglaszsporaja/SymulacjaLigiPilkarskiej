@@ -9,7 +9,7 @@ public class Main {
         int number_of_seasons = 1;
         int home = 1;
         int away = 2;
-        int motivated_or_tired = 3;
+        int motivated= 3;
         int hasForm = 4;
         int end_of_season=0;
         boolean already_done = false;
@@ -21,7 +21,7 @@ public class Main {
         Club FC_Barcelona = new Club(0.92, 0.81, 0.88, 1);
         ClubMotivation Real_Madrid = new ClubMotivation(0.93, 0.89, 0.96, 1, 1.07);
         Club Slask_Wroclaw = new Club(0.61, 0.49, 0.56, 1);
-        ClubTiredOfSeason Borussia_Dortmund = new ClubTiredOfSeason(0.81, 0.76, 0.79, 1, 0.88);
+        ClubTiredOfSeason Borussia_Dortmund = new ClubTiredOfSeason(0.81, 0.76, 0.79, 1, 0.97);
 
         // Uworzenie tablicy potrzebnej do zapisywania wynikow spotkan
 
@@ -113,7 +113,7 @@ public class Main {
 
                 // Jesli jest koncowka sezonu to przypisanie cech dla wybranych zespolow
 
-                already_done = uniqueFeaturesMotivationTiredOfSeason(game, fixtures, end_of_season, motivated_or_tired, already_done);
+                already_done = uniqueFeaturesMotivation(game, fixtures, end_of_season, motivated, already_done);
 
                 // Zwieszkanie/zmniejszanie wspolczynnikow jesli druzyna gra u siebie/na wyjezdzie
 
@@ -212,15 +212,15 @@ public class Main {
         game.getTeam2().setDefence(game.getTeam2().resetDefence(away));
     }
 
-    private static boolean uniqueFeaturesMotivationTiredOfSeason(Fixture game, List <Fixture> fixtures, int end_of_season, int motivated_or_tired, boolean already_done){
-        if((end_of_season >= 0.9 * (double)(fixtures.size())) && !already_done){
+    private static boolean uniqueFeaturesMotivation(Fixture game, List <Fixture> fixtures, int end_of_season, int motivated, boolean already_done){
+        if((end_of_season >= 0.7 * (double)(fixtures.size())) && !already_done){
             already_done = true;
-            game.getTeam1().setAttack(game.getTeam1().updateAttack(motivated_or_tired));
-            game.getTeam2().setAttack(game.getTeam2().updateAttack(motivated_or_tired));
-            game.getTeam1().setMidfield(game.getTeam1().updateMidfield(motivated_or_tired));
-            game.getTeam2().setMidfield(game.getTeam2().updateMidfield(motivated_or_tired));
-            game.getTeam1().setDefence(game.getTeam1().updateDefence(motivated_or_tired));
-            game.getTeam2().setDefence(game.getTeam2().updateDefence(motivated_or_tired));
+            game.getTeam1().setAttack(game.getTeam1().updateAttack(motivated));
+            game.getTeam2().setAttack(game.getTeam2().updateAttack(motivated));
+            game.getTeam1().setMidfield(game.getTeam1().updateMidfield(motivated));
+            game.getTeam2().setMidfield(game.getTeam2().updateMidfield(motivated));
+            game.getTeam1().setDefence(game.getTeam1().updateDefence(motivated));
+            game.getTeam2().setDefence(game.getTeam2().updateDefence(motivated));
         }
         return already_done;
     }
