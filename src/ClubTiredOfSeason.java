@@ -12,24 +12,30 @@ public class ClubTiredOfSeason extends Club implements Updates{
     @Override
     public double updateAttack(int value) {
         if(value == 3)
-            return super.updateAttack(value)*tired_of_season;
-        else
+            return getAttack()*tired_of_season;
+        if(value == 4)
             return super.updateAttack(value);
+        else
+            return getAttack();
     }
 
     @Override
     public double updateMidfield(int value) {
         if(value == 3)
-            return super.updateMidfield(value)*tired_of_season;
-        else
+            return getMidfield()*tired_of_season;
+        if(value == 4)
             return super.updateMidfield(value);
+        else
+            return getMidfield();
     }
 
     @Override
     public double updateDefence(int value) {
         if(value == 3)
-            return super.updateDefence(value)*tired_of_season;
-        else
+            return getDefence()*tired_of_season;
+        if(value == 4)
             return super.updateDefence(value);
+        else
+            return getDefence();
     }
 }

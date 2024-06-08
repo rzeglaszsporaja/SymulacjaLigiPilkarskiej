@@ -12,24 +12,30 @@ public class ClubMotivation extends Club implements Updates{
     @Override
     public double updateAttack(int value) {
         if(value == 3)
-            return super.updateAttack(value)*motivation;
-        else
+            return getAttack()*motivation;
+        if(value == 4)
             return super.updateAttack(value);
+        else
+            return getAttack();
     }
 
     @Override
     public double updateMidfield(int value) {
         if(value == 3)
-            return super.updateMidfield(value)*motivation;
-        else
+            return getMidfield()*motivation;
+        if(value == 4)
             return super.updateMidfield(value);
+        else
+            return getMidfield();
     }
 
     @Override
     public double updateDefence(int value) {
         if(value == 3)
-            return super.updateDefence(value)*motivation;
-        else
+            return getDefence()*motivation;
+        if(value == 4)
             return super.updateDefence(value);
+        else
+            return getDefence();
     }
 }

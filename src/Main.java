@@ -10,7 +10,8 @@ public class Main {
         int home = 1;
         int away = 2;
         int motivated_or_tired = 3;
-        int end_of_season=0;
+        int hasForm = 4;
+        int end_of_season=29;
         boolean already_done = false;
 
         // Uworzenie obiektow (klubow pilkarskich)
@@ -18,7 +19,7 @@ public class Main {
         ClubAway Rakow_Czestochowa = new ClubAway(0.58, 0.71, 0.59, 1, 0.9);
         ClubHome AS_Roma = new ClubHome(0.78, 0.75, 0.69, 1, 1.25);
         Club FC_Barcelona = new Club(0.92, 0.81, 0.88, 1);
-        ClubMotivation Real_Madrid = new ClubMotivation(0.93, 0.89, 0.96, 1, 1.12);
+        ClubMotivation Real_Madrid = new ClubMotivation(0.93, 0.89, 0.96, 1, 1.07);
         Club Slask_Wroclaw = new Club(0.61, 0.49, 0.56, 1);
         ClubTiredOfSeason Borussia_Dortmund = new ClubTiredOfSeason(0.81, 0.76, 0.79, 1, 0.88);
 
@@ -107,35 +108,38 @@ public class Main {
 
                 //Losowanie kontuzji dla pary druzyn ktore beda graly spotkanie
 
-                gettingInjuries(game, chances_of_injury);
+                int[] number_of_injuries = new int[6];
+                gettingInjuries(game, chances_of_injury, number_of_injuries);
 
                 // Jesli jest koncowka sezonu to przypisanie cech dla wybranych zespolow
 
-                uniqueFeaturesMotivationTiredOfSeason(game, fixtures, end_of_season, motivated_or_tired, already_done);
+                already_done = uniqueFeaturesMotivationTiredOfSeason(game, fixtures, end_of_season, motivated_or_tired, already_done);
 
                 // Zwieszkanie/zmniejszanie wspolczynnikow jesli druzyna gra u siebie/na wyjezdzie
 
                 uniqueFeaturesHomeAway(game, home, away);
 
+                // Sprawdzanie aktualnej formy i przyznawanie odpowiednich wspolczynnikow
+
+                checkingStreaks(game.getTeam1Key(), win_streaks, losing_streaks, draws);
+                checkingStreaks(game.getTeam2Key(), win_streaks, losing_streaks, draws);
+                hasStreak(game, game.getTeam1Key(), game.getTeam2Key(), win_streaks, losing_streaks, draws);
+                formUpdater(game, hasForm);
+
                 // Symulacja meczu miedzy 2 druzynami
 
                 MatchSimulator.simulateMatch(game.getTeam1(), game.getTeam2(), game.getTeam1Key(), game.getTeam2Key(), results, win_streaks, losing_streaks, draws);
 
-                /*
-                SAMO PRZYZNAWANIE LEPSZEJ FORMY DZIALA (CHYBA) ALE PRZEZ TO SYPIE SIE DUZO INNYCH RZECZY
-
-                checkingStreaks(game.getTeam1Key(), win_streaks, losing_streaks, draws);
-                checkingStreaks(game.getTeam2Key(), win_streaks, losing_streaks, draws);
-                hasStreak(game, game.getTeam1Key(), game.getTeam2Key(), win_streaks, losing_streaks, draws);*/
-
-
-                //Resetowanie wspolczynnikow klubow jesli wystapila kontuzja
-
-                recoveringFromInjuries(game);
+                //Resetowanie formy
+                formReseter(game, hasForm);
 
                 // Resetowanie wspolczynnikow po meczu u siebie/na wyjezdzie
 
                 resetUniqueFeaturesHomeAway(game, home, away);
+
+                //Resetowanie wspolczynnikow klubow jesli wystapila kontuzja
+
+                recoveringFromInjuries(game, number_of_injuries);
 
                 // Zapisanie do zmiennej ile meczow sie odbylo
 
@@ -146,39 +150,49 @@ public class Main {
         // Wypisanie wynikow
 
         System.out.println(results);
-        System.out.println(win_streaks);
-        System.out.println(losing_streaks);
-        System.out.println(draws);
     }
 
-    private static void gettingInjuries(Fixture game, double chances_of_injury){
+    private static int[] gettingInjuries(Fixture game, double chances_of_injury, int[] number_of_injuries){
         if (Math.random() < chances_of_injury) {
             Injury.injuryDefender(game.getTeam1());
+            number_of_injuries[0]++;
         }
         if (Math.random() < chances_of_injury) {
             Injury.injuryDefender(game.getTeam2());
+            number_of_injuries[1]++;
         }
         if (Math.random() < chances_of_injury) {
             Injury.injuryMidfielder(game.getTeam1());
+            number_of_injuries[2]++;
         }
         if (Math.random() < chances_of_injury) {
             Injury.injuryMidfielder(game.getTeam2());
+            number_of_injuries[3]++;
         }
         if (Math.random() < chances_of_injury) {
             Injury.injuryStriker(game.getTeam1());
+            number_of_injuries[4]++;
         }
         if (Math.random() < chances_of_injury) {
             Injury.injuryStriker(game.getTeam2());
+            number_of_injuries[5]++;
         }
+        return number_of_injuries;
     }
 
-    private static void recoveringFromInjuries(Fixture game){
-        Injury.recoveryDefender(game.getTeam1());
-        Injury.recoveryDefender(game.getTeam2());
-        Injury.recoveryMidfielder(game.getTeam1());
-        Injury.recoveryMidfielder(game.getTeam2());
-        Injury.recoveryStriker(game.getTeam1());
-        Injury.recoveryStriker(game.getTeam2());
+    private static void recoveringFromInjuries(Fixture game, int[] number_of_injuries){
+        if(number_of_injuries[0] == 1)
+            Injury.recoveryDefender(game.getTeam1());
+        if(number_of_injuries[1] == 1)
+            Injury.recoveryDefender(game.getTeam2());
+        if(number_of_injuries[2] == 1)
+            Injury.recoveryMidfielder(game.getTeam1());
+        if(number_of_injuries[3] == 1)
+            Injury.recoveryMidfielder(game.getTeam2());
+        if(number_of_injuries[4] == 1)
+            Injury.recoveryStriker(game.getTeam1());
+        if(number_of_injuries[5] == 1)
+            Injury.recoveryStriker(game.getTeam2());
     }
     private static void uniqueFeaturesHomeAway(Fixture game, int home, int away){
         game.getTeam1().setAttack(game.getTeam1().updateAttack(home));
@@ -198,7 +212,7 @@ public class Main {
         game.getTeam2().setDefence(game.getTeam2().resetDefence(away));
     }
 
-    private static void uniqueFeaturesMotivationTiredOfSeason(Fixture game, List <Fixture> fixtures, int end_of_season, int motivated_or_tired, boolean already_done){
+    private static boolean uniqueFeaturesMotivationTiredOfSeason(Fixture game, List <Fixture> fixtures, int end_of_season, int motivated_or_tired, boolean already_done){
         if((end_of_season >= 0.9 * (double)(fixtures.size())) && !already_done){
             already_done = true;
             game.getTeam1().setAttack(game.getTeam1().updateAttack(motivated_or_tired));
@@ -208,6 +222,7 @@ public class Main {
             game.getTeam1().setDefence(game.getTeam1().updateDefence(motivated_or_tired));
             game.getTeam2().setDefence(game.getTeam2().updateDefence(motivated_or_tired));
         }
+        return already_done;
     }
     private static void fillingMaps(Map<String, Integer>map){
         map.put("Rakow_Czestochowa", 0);
@@ -235,24 +250,46 @@ public class Main {
     private static void hasStreak(Fixture game, String team1, String team2, Map<String, Integer> map1, Map<String, Integer> map2, Map<String, Integer> map3){
         if(map1.get(team1) == 2){
             game.getTeam1().setForm(1.1);
+            map1.put(team1, 0);
             map2.put(team1, 0);
             map3.put(team1, 0);
         }
         if(map2.get(team1) == 2){
             game.getTeam1().setForm(0.9);
             map1.put(team1, 0);
+            map2.put(team1, 0);
             map3.put(team1, 0);
         }
         if(map1.get(team2) == 2){
             game.getTeam2().setForm(1.1);
+            map1.put(team1, 0);
             map2.put(team2, 0);
             map3.put(team2, 0);
         }
         if(map2.get(team2) == 2){
             game.getTeam2().setForm(0.9);
             map1.put(team2, 0);
+            map2.put(team2, 0);
             map3.put(team2, 0);
         }
+    }
+    private static void formUpdater(Fixture game, int hasForm){
+        game.getTeam1().setAttack(game.getTeam1().updateAttack(hasForm));
+        game.getTeam2().setAttack(game.getTeam2().updateAttack(hasForm));
+        game.getTeam1().setMidfield(game.getTeam1().updateMidfield(hasForm));
+        game.getTeam2().setMidfield(game.getTeam2().updateMidfield(hasForm));
+        game.getTeam1().setDefence(game.getTeam1().updateDefence(hasForm));
+        game.getTeam2().setDefence(game.getTeam2().updateDefence(hasForm));
+    }
+    private static void formReseter(Fixture game, int hasForm){
+        game.getTeam1().setAttack(game.getTeam1().resetAttack(hasForm));
+        game.getTeam2().setAttack(game.getTeam2().resetAttack(hasForm));
+        game.getTeam1().setMidfield(game.getTeam1().resetMidfield(hasForm));
+        game.getTeam2().setMidfield(game.getTeam2().resetMidfield(hasForm));
+        game.getTeam1().setDefence(game.getTeam1().resetDefence(hasForm));
+        game.getTeam2().setDefence(game.getTeam2().resetDefence(hasForm));
+        game.getTeam1().setForm(1);
+        game.getTeam2().setForm(1);
     }
 }
 

@@ -12,44 +12,56 @@ public class ClubHome extends Club implements Updates{
     @Override
     public double updateAttack(int value) {
         if(value == 1)
-            return super.updateAttack(value)*home;
-        else
+            return getAttack()*home;
+        if(value == 4)
             return super.updateAttack(value);
+        else
+            return getAttack();
     }
     @Override
     public double updateMidfield(int value) {
-        if (value == 1)
-            return super.updateMidfield(value)*home;
-        else
+        if(value == 1)
+            return getMidfield()*home;
+        if(value == 4)
             return super.updateMidfield(value);
+        else
+            return getMidfield();
     }
     @Override
     public double updateDefence(int value) {
         if(value == 1)
-            return super.updateDefence(value)*home;
-        else
+            return getDefence()*home;
+        if(value == 4)
             return super.updateDefence(value);
+        else
+            return getDefence();
     }
 
     @Override
     public double resetAttack(int value){
         if(value == 1)
-            return super.resetAttack(value)/home;
-        else
+            return getAttack()/home;
+        if(value == 4)
             return super.resetAttack(value);
+        else
+            return getAttack();
     }
     @Override
     public double resetMidfield(int value){
         if(value == 1)
-            return super.resetMidfield(value)/home;
-        else
+            return getMidfield()/home;
+        if(value == 4)
             return super.resetMidfield(value);
+        else
+            return getMidfield();
     }
     @Override
     public double resetDefence(int value){
         if(value == 1)
-            return super.resetDefence(value)/home;
-        else
+            return getDefence()/home;
+        if(value == 4)
             return super.resetDefence(value);
+        else
+            return getDefence();
     }
 }

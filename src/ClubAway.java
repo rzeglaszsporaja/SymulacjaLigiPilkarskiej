@@ -12,44 +12,56 @@ public class ClubAway extends Club implements Updates{
     @Override
     public double updateAttack(int value) {
         if(value == 2)
-            return super.updateAttack(value)*away;
-        else
+            return getAttack()*away;
+        if(value == 4)
             return super.updateAttack(value);
+        else
+            return getAttack();
     }
     @Override
     public double updateMidfield(int value) {
         if(value == 2)
-            return super.updateMidfield(value)*away;
+            return getMidfield()*away;
+        if(value == 4)
+            return super.updateMidfield(value);
         else
-            return super.updateAttack(value);
+            return getMidfield();
     }
     @Override
     public double updateDefence(int value) {
         if(value == 2)
-            return super.updateDefence(value)*away;
+            return getDefence()*away;
+        if(value == 4)
+            return super.updateDefence(value);
         else
-            return super.updateAttack(value);
+            return getDefence();
     }
 
     @Override
     public double resetAttack(int value){
         if(value == 2)
-            return super.resetAttack(value)/away;
-        else
+            return getAttack()/away;
+        if(value == 4)
             return super.resetAttack(value);
+        else
+            return getAttack();
     }
     @Override
     public double resetMidfield(int value){
         if(value == 2)
-            return super.resetMidfield(value)/away;
-        else
+            return getMidfield()/away;
+        if(value == 4)
             return super.resetMidfield(value);
+        else
+            return getMidfield();
     }
     @Override
     public double resetDefence(int value){
         if(value == 2)
-            return super.resetDefence(value)/away;
-        else
+            return getDefence()/away;
+        if(value == 4)
             return super.resetDefence(value);
+        else
+            return getDefence();
     }
 }
