@@ -159,13 +159,10 @@ public class Main {
         // Wypisanie wynikow
         System.out.println();
         System.out.println("--------------------------------------------------------------------------------------------------");
-        System.out.println("|                                                                                                 |");
-        System.out.println("|                                        SIMULATION RESULTS:                                      |");
-        System.out.println("|                                          (for "+number_of_seasons+" seasons)                                        |");
-        System.out.println("|                                                                                                 |");
-        System.out.println("|  AS_Roma   Borussia_Dortmund   FC_Barcelona    Rakow_Czestochowa   Real_Madrid   Slask_Wroclaw  |");
-        System.out.println("|    "+results.get(ASR)+"             "+results.get(BVB)+"                "+results.get(FCB)+"                 "+results.get(RCZ)+"              "+results.get(RM)+"               "+results.get(SW)+"        |");
-        System.out.println("|                                                                                                 |");
+        System.out.println("\n                                        SIMULATION RESULTS:                                      ");
+        System.out.println("                                          (for "+number_of_seasons+" seasons)                                        ");
+        System.out.println("\n  AS_Roma   Borussia_Dortmund   FC_Barcelona    Rakow_Czestochowa   Real_Madrid   Slask_Wroclaw  ");
+        System.out.println("    "+results.get(ASR)+"             "+results.get(BVB)+"                "+results.get(FCB)+"                 "+results.get(RCZ)+"              "+results.get(RM)+"             "+results.get(SW)+"       \n");
         System.out.println("--------------------------------------------------------------------------------------------------");
 
         //Zapis do pliku
