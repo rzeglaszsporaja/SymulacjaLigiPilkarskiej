@@ -1,4 +1,7 @@
 import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Main {
     public static void main(String[] args) {
@@ -96,6 +99,12 @@ public class Main {
 
         // Przeprowadzenie tylu sezonow ile wybral uzytkownik
 
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Select number of seasons: ");
+        String numberScanner = scan.nextLine();
+        number_of_seasons = Integer.valueOf(numberScanner);
+
+
         for (int i = 0; i < number_of_seasons; i++) {
 
             // Lista spotkan zostaje wymieszana aby kolejnosc rozgrywania meczow byla przypadkowa
@@ -152,15 +161,28 @@ public class Main {
         System.out.println("--------------------------------------------------------------------------------------------------");
         System.out.println("|                                                                                                 |");
         System.out.println("|                                        SIMULATION RESULTS:                                      |");
+        System.out.println("|                                          (for "+number_of_seasons+" seasons)                                        |");
         System.out.println("|                                                                                                 |");
         System.out.println("|  AS_Roma   Borussia_Dortmund   FC_Barcelona    Rakow_Czestochowa   Real_Madrid   Slask_Wroclaw  |");
         System.out.println("|    "+results.get(ASR)+"             "+results.get(BVB)+"                "+results.get(FCB)+"                 "+results.get(RCZ)+"              "+results.get(RM)+"               "+results.get(SW)+"        |");
         System.out.println("|                                                                                                 |");
         System.out.println("--------------------------------------------------------------------------------------------------");
 
+        //Zapis do pliku
+        saveResultsToCSV(results, win_streaks, losing_streaks, draws);
+    }
 
-
-        //System.out.println(results);
+    private static void saveResultsToCSV(Map<String, Integer> results, Map<String, Integer> win_streaks, Map<String, Integer> losing_streaks, Map<String, Integer> draws) {
+        String resultsCSV = "simulation_results.csv";
+        try (PrintWriter writer = new PrintWriter(new FileWriter(resultsCSV))) {
+            writer.println("Team,Results");
+            for (String team : results.keySet()) {
+                writer.println(team + "," + results.get(team));
+            }
+            System.out.println("The results have been saved to a file " + resultsCSV);
+        } catch (IOException e) {
+            System.err.println("Error writing results to file: " + e.getMessage());
+        }
     }
 
     private static int[] gettingInjuries(Fixture game, double chances_of_injury, int[] number_of_injuries){
