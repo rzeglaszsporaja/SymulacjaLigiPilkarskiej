@@ -99,10 +99,17 @@ public class Main {
 
         // Przeprowadzenie tylu sezonow ile wybral uzytkownik
 
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Select number of seasons: ");
-        String numberScanner = scan.nextLine();
-        number_of_seasons = Integer.valueOf(numberScanner);
+        boolean correct_number = false;
+        while(!correct_number) {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Select number of seasons: [MAX: 50]");
+            String numberScanner = scan.nextLine();
+            number_of_seasons = Integer.valueOf(numberScanner);
+            if(number_of_seasons <= 50 && number_of_seasons > 0)
+                correct_number = true;
+            else
+                System.out.println("Incorrect number of seasons. Please try again...");
+        }
 
 
         for (int i = 0; i < number_of_seasons; i++) {
@@ -157,6 +164,7 @@ public class Main {
         }
 
         // Wypisanie wynikow
+
         System.out.println();
         System.out.println("--------------------------------------------------------------------------------------------------");
         System.out.println("\n                                        SIMULATION RESULTS:                                      ");
@@ -166,6 +174,7 @@ public class Main {
         System.out.println("--------------------------------------------------------------------------------------------------");
 
         //Zapis do pliku
+
         saveResultsToCSV(results, win_streaks, losing_streaks, draws);
     }
 

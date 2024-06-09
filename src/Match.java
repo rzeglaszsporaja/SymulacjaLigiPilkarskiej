@@ -4,7 +4,7 @@ public class Match{
         int random = (int)((range*Math.random())+min);
         return random;
     }
-    public static int match(double attack1, double attack2, double midfield1, double midfield2, double defence1, double defence2, double form1, double form2)
+    public static int match(double attack1, double attack2, double midfield1, double midfield2, double defence1, double defence2)
     {
         int goal1 = 0;
         int goal2 = 0;
@@ -20,7 +20,6 @@ public class Match{
             if(random(0,100)<chanceOfScoring)
                 goal2++;
         }
-
         if(goal1>goal2)
             return 1;
         if(goal2>goal1)
