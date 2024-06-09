@@ -148,8 +148,19 @@ public class Main {
         }
 
         // Wypisanie wynikow
+        System.out.println();
+        System.out.println("--------------------------------------------------------------------------------------------------");
+        System.out.println("|                                                                                                 |");
+        System.out.println("|                                        SIMULATION RESULTS:                                      |");
+        System.out.println("|                                                                                                 |");
+        System.out.println("|  AS_Roma   Borussia_Dortmund   FC_Barcelona    Rakow_Czestochowa   Real_Madrid   Slask_Wroclaw  |");
+        System.out.println("|    "+results.get(ASR)+"             "+results.get(BVB)+"                "+results.get(FCB)+"                 "+results.get(RCZ)+"              "+results.get(RM)+"               "+results.get(SW)+"        |");
+        System.out.println("|                                                                                                 |");
+        System.out.println("--------------------------------------------------------------------------------------------------");
 
-        System.out.println(results);
+
+
+        //System.out.println(results);
     }
 
     private static int[] gettingInjuries(Fixture game, double chances_of_injury, int[] number_of_injuries){
