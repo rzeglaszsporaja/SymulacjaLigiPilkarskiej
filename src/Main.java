@@ -3,7 +3,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Main class for simulating football matches and seasons.
+ * @author Michal Kapica, Mateusz Kula
+ */
 public class Main {
+    /**
+     * Main method to run the simulation.
+     * @param args
+     */
     public static void main(String[] args) {
 
         // Zmienne potrzebne do wybranych funkcji w programie
@@ -28,7 +36,7 @@ public class Main {
 
         // Uworzenie tablicy potrzebnej do zapisywania wynikow spotkan
 
-        Map<String, Integer>results = new TreeMap<>();
+        Map<String, Integer>results = new TreeMap<>();//metoda na dole zeby nie powtarzac
         fillingMaps(results);
 
         // Utworzenie tablicy potrzebnej do zapisywania ilosci wygranych spotkan
@@ -46,7 +54,7 @@ public class Main {
         Map<String, Integer>draws = new TreeMap<>();
         fillingMaps(draws);
 
-        // Skroty nazw klubow
+        // Skroty nazw klubow zeby latwiej z tego korzystac
 
         String RCZ = "Rakow_Czestochowa";
         String ASR = "AS_Roma";
@@ -97,7 +105,7 @@ public class Main {
         fixtures.add(new Fixture(Borussia_Dortmund, Real_Madrid, BVB, RM));
         fixtures.add(new Fixture(Borussia_Dortmund, Slask_Wroclaw, BVB, SW));
 
-        // Przeprowadzenie tylu sezonow ile wybral uzytkownik
+
 
         boolean correct_number = false;
         while(!correct_number) {
@@ -111,6 +119,7 @@ public class Main {
                 System.out.println("Incorrect number of seasons. Please try again...");
         }
 
+        // Przeprowadzenie tylu sezonow ile wybral uzytkownik
 
         for (int i = 0; i < number_of_seasons; i++) {
 
@@ -178,6 +187,13 @@ public class Main {
         saveResultsToCSV(results, win_streaks, losing_streaks, draws);
     }
 
+    /**
+     * Saves the results of the simulation to a CSV file.
+     * @param results Map of match results
+     * @param win_streaks Map of win streaks for each team
+     * @param losing_streaks Map of losing streaks for each team
+     * @param draws Map of draw streaks for each team
+     */
     private static void saveResultsToCSV(Map<String, Integer> results, Map<String, Integer> win_streaks, Map<String, Integer> losing_streaks, Map<String, Integer> draws) {
         String resultsCSV = "simulation_results.csv";
         try (PrintWriter writer = new PrintWriter(new FileWriter(resultsCSV))) {
@@ -191,6 +207,12 @@ public class Main {
         }
     }
 
+    /**
+     * Calculates the number of injuries for each team.
+     * @param game The match fixture
+     * @param chances_of_injury Probability of an injury occurring
+     * @param number_of_injuries Array to store the number of injuries for each team
+     */
     private static int[] gettingInjuries(Fixture game, double chances_of_injury, int[] number_of_injuries){
         if (Math.random() < chances_of_injury) {
             Injury.injuryDefender(game.getTeam1());
@@ -219,6 +241,11 @@ public class Main {
         return number_of_injuries;
     }
 
+    /**
+     * Recovers teams from injuries.
+     * @param game The match fixture
+     * @param number_of_injuries Array storing the number of injuries for each team
+     */
     private static void recoveringFromInjuries(Fixture game, int[] number_of_injuries){
         if(number_of_injuries[0] == 1)
             Injury.recoveryDefender(game.getTeam1());
@@ -233,6 +260,13 @@ public class Main {
         if(number_of_injuries[5] == 1)
             Injury.recoveryStriker(game.getTeam2());
     }
+
+    /**
+     * Adjusts coefficients for teams playing at home or away.
+     * @param game The match fixture
+     * @param home Home coefficient
+     * @param away Away coefficient
+     */
     private static void uniqueFeaturesHomeAway(Fixture game, int home, int away){
         game.getTeam1().setAttack(game.getTeam1().updateAttack(home));
         game.getTeam2().setAttack(game.getTeam2().updateAttack(away));
@@ -242,6 +276,12 @@ public class Main {
         game.getTeam2().setDefence(game.getTeam2().updateDefence(away));
     }
 
+    /**
+     * Resets the unique features related to home and away matches.
+     * @param game The match fixture
+     * @param home Home coefficient
+     * @param away Away coefficient
+     */
     private static void resetUniqueFeaturesHomeAway(Fixture game, int home, int away){
         game.getTeam1().setAttack(game.getTeam1().resetAttack(home));
         game.getTeam2().setAttack(game.getTeam2().resetAttack(away));
@@ -251,6 +291,15 @@ public class Main {
         game.getTeam2().setDefence(game.getTeam2().resetDefence(away));
     }
 
+    /**
+     * Applies unique features related to motivation to the teams.
+     * @param game The match fixture
+     * @param fixtures List of all fixtures
+     * @param end_of_season Number of matches played in the season
+     * @param motivated Motivation coefficient
+     * @param already_done Boolean flag to indicate if features have been applied
+     * @return Updated boolean flag
+     */
     private static boolean uniqueFeaturesMotivation(Fixture game, List <Fixture> fixtures, int end_of_season, int motivated, boolean already_done){
         if((end_of_season >= 0.7 * (double)(fixtures.size())) && !already_done){
             already_done = true;
@@ -263,6 +312,11 @@ public class Main {
         }
         return already_done;
     }
+
+    /**
+     * Fills the provided map with initial values for each team.
+     * @param map The map to be filled
+     */
     private static void fillingMaps(Map<String, Integer>map){
         map.put("Rakow_Czestochowa", 0);
         map.put("AS_Roma", 0);
@@ -272,6 +326,13 @@ public class Main {
         map.put("Borussia_Dortmund", 0);
     }
 
+    /**
+     * Checks the streaks of a team and resets other streaks if one is active.
+     * @param team The key identifying the team
+     * @param map1 Map representing win streaks
+     * @param map2 Map representing losing streaks
+     * @param map3 Map representing draw streaks
+     */
     private static void checkingStreaks(String team, Map<String, Integer> map1, Map<String, Integer> map2, Map<String, Integer> map3){
         if(map1.get(team) == 1){
             map2.put(team, 0);
@@ -286,6 +347,16 @@ public class Main {
             map1.put(team, 0);
         }
     }
+
+    /**
+     * Updates the form of teams based on their current streaks.
+     * @param game The match fixture
+     * @param team1 The key identifying the first team
+     * @param team2 The key identifying the second team
+     * @param map1 Map representing win streaks
+     * @param map2 Map representing losing streaks
+     * @param map3 Map representing draw streaks
+     */
     private static void hasStreak(Fixture game, String team1, String team2, Map<String, Integer> map1, Map<String, Integer> map2, Map<String, Integer> map3){
         if(map1.get(team1) == 2){
             game.getTeam1().setForm(1.1);
@@ -312,6 +383,12 @@ public class Main {
             map3.put(team2, 0);
         }
     }
+
+    /**
+     * Updates the attributes of teams based on their current form.
+     * @param game The match fixture
+     * @param hasForm Form coefficient
+     */
     private static void formUpdater(Fixture game, int hasForm){
         game.getTeam1().setAttack(game.getTeam1().updateAttack(hasForm));
         game.getTeam2().setAttack(game.getTeam2().updateAttack(hasForm));
@@ -320,6 +397,12 @@ public class Main {
         game.getTeam1().setDefence(game.getTeam1().updateDefence(hasForm));
         game.getTeam2().setDefence(game.getTeam2().updateDefence(hasForm));
     }
+
+    /**
+     * Resets the attributes and form of teams after a match.
+     * @param game The match fixture
+     * @param hasForm Form coefficient
+     */
     private static void formReseter(Fixture game, int hasForm){
         game.getTeam1().setAttack(game.getTeam1().resetAttack(hasForm));
         game.getTeam2().setAttack(game.getTeam2().resetAttack(hasForm));
